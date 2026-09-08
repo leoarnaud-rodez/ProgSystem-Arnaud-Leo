@@ -1,0 +1,9 @@
+*.o
+*.out
+*.exe
+*.a
+*.so
+
+*.class
+*.jar
+*.obj
