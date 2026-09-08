@@ -34,7 +34,7 @@ public class Image {
      * Sauvegarde l'image au format texte PPM (P3)
      */
     public void save_txt(String filename) throws IOException {
-        FileWriter writer = new FileWriter("Image.ppm");
+        FileWriter writer = new FileWriter(filename);
         
         writer.write("P3\n");
 
