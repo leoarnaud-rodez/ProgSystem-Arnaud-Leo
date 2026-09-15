@@ -1,0 +1,5 @@
+La différence entre 1 gros write qui écrit tout le fichier d'un coup et plusieurs petits write qui écrivent
+le fichier petit à petit est que un gros write sera (le temps de tout écrire) mais ne fera qu'un
+seul syscall.
+Alors que plusieurs petits write seront plus légers mais feront de multiples appels systèmes ce qui causera plus de 
+context switch (d'ordonnancement) et fera donc bien plus d'allers-retours entre la JVM et le Kernel.

@@ -4,9 +4,11 @@ Q1) Que garanti un système RTOS
 		Le système RTOS est à temps réel donc il garanti un temps maximum d'execution pour un processus. Dans le cas ou ce processus dépasse ce temps maximum il est tué instantanément.
 		Il s'agit des système utilisé majoritairement pour les fusées ou les grandes chaînes d'industrie.
 
+
 Q2) Que garanti un système moderne (noyau/OS) -> sécurité / perf / user / processus
 		Un système moderne suivant l'architecture noyau / OS garanti le lancement des programmes, les basculement entre les procecssus, la getion mémoire et le cloisement entre Users.
 		Cet architecture moderne garanti également l'isolement entre les processus et la sécurité via une athentification ou autre.
+
 
 Q3) Une variable dans un language de prop.
 
@@ -17,6 +19,7 @@ RAPPEL : a += 5 -> LAOD / ADD / STORE
 b) Qu'est ce que l'on peut faire en Assembleur et non en java ?
 		En assembleur, on manipule directemement les registres et les allocations mémoire des variables ("mémoire") alors qu'en java nous n'avons pas le controle sur la gestion mémoire de la JVM.
 		De plus, en assembleur c'est à nous de garantir la taille
+
 
 Q4) Supposez que nous avons le code suivant : 
 float[] b = new float[50]; (200V)
@@ -29,13 +32,21 @@ b) Que peut-on dire sur les @ de début (ce suivent t'ils ?)
 
 c) Quels sont les offsets mémoire de b[10] et a[16] ?
 
+
 Q5) Considérons une image de taille 50x100 en RGBA.
 
 a) Donnez l'équation qui permet d'encoder (x,y,c) -> (i) donc 3D -> 1D
-
+	((y * longueur) + x) * 3 + z            // 3 est ici la profondeur -> RGB
+	((y * 50) + x) * 4 + c					// 4 car RGBA
+	
 b) Déduisez l'équation inverse.
+	c = i%4 // composant a composant       q = i/4      (y * 50) + x  // pixels a pixels
+	x = q%50 							   y = q/50   // x et y tout 2 utiles pour la lecture
 
 c) Déterminez l'équation d'interpolation permettant de transformer [a,b] -> [c,d] (indice, passage par [0,1])
+	z = f(x) = (x-a) / (b-a)
+	w = f(x) = z(d-c)+c
+
 
 Q6) Supposons que nous souhaitons créer un format de fichier qui permet d'enregistrer d'autres fichiers dedans.
 Il faut définir :
@@ -47,3 +58,22 @@ un header (magic code + version)
 Comment ajouter / retirer un fichier
 
 Q7) (maison) À partir de l'I/O du TP1, déduisez (graphiquement) les interactions Java <-> C.
+
+
+
+			Java =>  FIleWriter.write(String)				|
+					=> FileOutputStream write(byte[])		|
+						=> FileDesc...   write(jvm)			|  User
+															|  space
+			JVM => syscalll write							|
+															|
+			
+			Kernel											|
+				=> ops write								| 
+															| 
+			Materiel										| kernel
+				=> prend du temps (trop) 					| space
+					=> autre programme qui se réveil        |
+						(ordonancement)						|
+															|
+															
