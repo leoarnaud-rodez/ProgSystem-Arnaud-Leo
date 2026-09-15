@@ -55,6 +55,8 @@ public class Image {
 	 *
 	 * utiliser write(byte[] pixels = new byte[3]) et FileOutputStream
 	 * besoin de rien d'autre
+	 * 
+	 * https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/io/FileOutputStream.html#%3Cinit%3E(java.io.File)
      */
     public void save_bin(String filename) throws IOException {
         FileOutputStream writer = new FileOutputStream(filename);
