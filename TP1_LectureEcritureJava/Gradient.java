@@ -14,6 +14,9 @@ public class Gradient {
 
         try {
             img.save_txt("gradient.ppm");
+
+            img.save_bin("gradient_bin.ppm");
+
             System.out.println("Dégradé créé avec succès !");
         } catch (Exception e) {
             System.err.println("Erreur lors de la création du dégradé : " + e.getMessage());

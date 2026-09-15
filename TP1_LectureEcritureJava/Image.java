@@ -56,22 +56,24 @@ public class Image {
 	 * utiliser write(byte[] pixels = new byte[3]) et FileOutputStream
 	 * besoin de rien d'autre
 	 * 
-	 * https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/io/FileOutputStream.html#%3Cinit%3E(java.io.File)
      */
     public void save_bin(String filename) throws IOException {
         FileOutputStream writer = new FileOutputStream(filename);
 
-        writer.write("P6\n");
-        writer.write(width + " " + height + "\n");
-        writer.write("255\n");    // a mettre sur une seule case
+        // écriture de l'entête du fichier binarie PPM
+        String entete = "P6\n" + width + " " + height + "\n255\n";
+        writer.write(entete.getBytes());
+
+        byte[] pixel = new byte[3];
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                writer.write(pixels[y][x][0] + " " + pixels[y][x][1] + " " + pixels[y][x][2] + " ");
+                pixel[0] = (byte) pixels[y][x][0];
+                pixel[1] = (byte) pixels[y][x][1];
+                pixel[2] = (byte) pixels[y][x][2];
+                writer.write(pixel);
             }
-            writer.write("\n");
         }
-
         writer.close();
     }
 }
