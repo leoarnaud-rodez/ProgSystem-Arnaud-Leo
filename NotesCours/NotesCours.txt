@@ -1,0 +1,5 @@
+Il faut savoir structurer l'information
+
+Le premier ou les 2 premiers secteurs du disque sont reservé pour le MBR (ou GPT) 
+
+Dans gpt y'a une partie pour les métadonnées
