@@ -58,7 +58,7 @@ public class MemoryManager {
 			memory[octetOffset] | (1 << bitPosition);
 		} else {
 			// Positionner le bit à 0.
-			memory[octetOffset] | (1 >> bitPosition);
+			memory[octetOffset] & (1 << bitPosition);
 		}
 
 		return true;
