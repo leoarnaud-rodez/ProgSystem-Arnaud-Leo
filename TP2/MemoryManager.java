@@ -38,63 +38,61 @@ public class MemoryManager {
         writeSuperblock();
 
         // Réserver les blocs système 0 à 128.
-		for (int indexBloc = 0; indexBloc <= 128; indexBloc++) {
-			setBlockUsed(indexBloc, true);
-		}
+        for (int indexBloc = 0; indexBloc <= 128; indexBloc++) {
+            setBlockUsed(indexBloc, true);
+        }
     }
-	
-	public boolean setBlockUsed(int blockNumber, boolean used) {
-		if (blockNumber < 0 ||
-			blockNumber >= NUM_BLOCKS) {
-			return false;
-		}
+        
+    public boolean setBlockUsed(int blockNumber, boolean used) {
+        if (blockNumber < 0 ||
+                blockNumber >= NUM_BLOCKS) {
+            return false;
+        }
 
-		int byteIndex = blockNumber / 8;
-		int bitPosition = blockNumber % 8;
-		int offset = BITMAP_OFFSET + byteIndex;
+        int byteIndex = blockNumber / 8;
+        int bitPosition = blockNumber % 8;
+        int offset = BITMAP_OFFSET + byteIndex;
 
-		if (used) {
-			// Positionner le bit à 1.
-			memory[offset] | (1 << bitPosition);
-		} else {
-			// Positionner le bit à 0.
-			memory[offset] & (1 << bitPosition);
-		}
+        if (used) {
+            // Positionner le bit à 1.
+            memory[offset] |= (1 << bitPosition);
+        } else {
+            // Positionner le bit à 0.
+            memory[offset] &= ~(1 << bitPosition);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public int isBlockUsed(int blockNumber) {
+    public int isBlockUsed(int blockNumber) {
 
-		if (blockNumber < 0 ||
-			blockNumber >= NUM_BLOCKS) {
-			return -1;
-		}
+        if (blockNumber < 0 ||
+                blockNumber >= NUM_BLOCKS) {
+            return -1;
+        }
 
-		// TODO:
-		// Calculer byteIndex.
-		// Calculer bitPosition.
-		// Lire le bit.
+        int byteIndex = blockNumber / 8;
+        int bitPosition = blockNumber % 8;
+        int offset = BITMAP_OFFSET + byteIndex;
 
-		return -1;
-	}
+        return (memory[offset] >> bitPosition) & 1;
+    }
 
-	public int allocateBlock() {
+    public int allocateBlock() {
 
-		// TODO:
-		// Parcourir les blocs de données :
-		// 129 .. NUM_BLOCKS - 1.
-		//
-		// Retourner le premier bloc libre.
-		// Le marquer immédiatement comme utilisé.
+        // Parcourir les blocs de données :
+        // 129 .. NUM_BLOCKS - 1.
+        for (int blockIndex = 129; blockIndex < NUM_BLOCKS; blockIndex++) {
+            if (isBlockUsed(blockIndex) == 0) {
+                setBlockUsed(blockIndex, true);
+                return blockIndex;
+            }
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
     private void writeSuperblock() {
-        // TODO:
-        // Utiliser Utils pour écrire les métadonnées.
-
         Utils.writeString(
                 memory,
                 SUPERBLOCK_OFFSET,

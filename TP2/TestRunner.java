@@ -18,7 +18,7 @@ public class TestRunner {
         testStep4();
 
         // Étape 5
-        // testStep5();
+        testStep5();
 
         System.out.println("\n[SUCCÈS] Tous les tests activés ont été validés avec succès !");
     }
@@ -153,5 +153,86 @@ public class TestRunner {
 
 		System.out.println("[OK] Étape 4 validée !");
 	}
+
+	public static void testStep5() {
+		System.out.println("--- Test Étape 5 : Gestion du Bitmap ---");
+		MemoryManager mm = new MemoryManager();
+
+		// 1. Vérification des blocs système réservés (0 à 128)
+		boolean systemBlocksOk = true;
+		for (int i = 0; i <= 128; i++) {
+			if (mm.isBlockUsed(i) != 1) {
+				systemBlocksOk = false;
+				break;
+			}
+		}
+		System.out.println("Blocs système réservés (0-128) : " + (systemBlocksOk ? "OK" : "ERREUR"));
+
+		// 2. Vérification que le premier bloc de données (129) est libre au départ
+		System.out.println("Bloc 129 libre au départ : " + (mm.isBlockUsed(129) == 0 ? "OK" : "ERREUR"));
+
+		// 3. Allocation d'un bloc de données
+		int allocated1 = mm.allocateBlock();
+		System.out.println("Allocation bloc 1 (attendu 129) : " + allocated1 + " -> " + (allocated1 == 129 ? "OK" : "ERREUR"));
+		System.out.println("Bloc 129 marqué comme occupé : " + (mm.isBlockUsed(129) == 1 ? "OK" : "ERREUR"));
+
+		// 4. Deuxième allocation
+		int allocated2 = mm.allocateBlock();
+		System.out.println("Allocation bloc 2 (attendu 130) : " + allocated2 + " -> " + (allocated2 == 130 ? "OK" : "ERREUR"));
+
+		// 5. Libération du bloc 129
+		mm.setBlockUsed(129, false);
+		System.out.println("Bloc 129 libéré : " + (mm.isBlockUsed(129) == 0 ? "OK" : "ERREUR"));
+
+		// 6. Réallocation (doit reprendre le premier bloc disponible, soit 129)
+		int allocated3 = mm.allocateBlock();
+		System.out.println("Réallocation (attendu 129) : " + allocated3 + " -> " + (allocated3 == 129 ? "OK" : "ERREUR"));
+
+		// 7. Vérification de la gestion des hors-bornes
+		boolean invalidOk = (mm.isBlockUsed(-1) == -1) && (mm.isBlockUsed(MemoryManager.NUM_BLOCKS) == -1);
+		System.out.println("Gestion des indices invalides : " + (invalidOk ? "OK" : "ERREUR"));
+		System.out.println();
+	}
+
+	/**
+     * Test de l'Étape 6 : Lecture de la structure Inode.
+     *
+     * @author Léo Arnaud
+     */
+    public static void testStep6() {
+        System.out.println("--- Test Étape 6 : Lecture Inode ---");
+        MemoryManager memoryManager = new MemoryManager();
+        byte[] memory = memoryManager.getFilesystemMemory();
+
+        // L'inode 0 se trouve à l'offset 1024 (2 * 512).
+        int inodeOffset = MemoryManager.INODE_TABLE_OFFSET;
+
+        // Écriture manuelle de métadonnées pour le test.
+        Utils.writeInt(memory, inodeOffset + 0, 0);       // Numéro inode = 0.
+        Utils.writeInt(memory, inodeOffset + 4, 1);       // FileType = 1.
+        Utils.writeInt(memory, inodeOffset + 8, 2048);    // FileSize = 2048 octets.
+        Utils.writeLong(memory, inodeOffset + 12, 1000L); // Date création.
+        Utils.writeLong(memory, inodeOffset + 20, 2000L); // Date modification.
+
+        // Premier pointeur direct = bloc 129.
+        Utils.writeInt(memory, inodeOffset + 28, 129);
+
+        // Lecture via l'objet Inode.
+        Inode inode = new Inode(memoryManager, 0);
+
+        boolean offsetOk = (inode.getInodeOffset() == 1024);
+        boolean typeOk = (inode.getFileType() == 1);
+        boolean sizeOk = (inode.getFileSize() == 2048);
+        boolean createOk = (inode.getCreationTime() == 1000L);
+        boolean modifOk = (inode.getModificationTime() == 2000L);
+        boolean pointerOk = (inode.getDirectPointers()[0] == 129);
+
+        System.out.println("Calcul offset (1024) : " + (offsetOk ? "OK" : "ERREUR"));
+        System.out.println("Type de fichier (1) : " + (typeOk ? "OK" : "ERREUR"));
+        System.out.println("Taille de fichier (2048) : " + (sizeOk ? "OK" : "ERREUR"));
+        System.out.println("Dates création/modif : " + (createOk && modifOk ? "OK" : "ERREUR"));
+        System.out.println("Pointeur direct 0 (129) : " + (pointerOk ? "OK" : "ERREUR"));
+        System.out.println();
+    }
 
 }
