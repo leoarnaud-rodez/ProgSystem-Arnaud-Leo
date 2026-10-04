@@ -148,4 +148,64 @@ public class Inode {
         // Offset relatif 74.
         return Utils.readInt(memory, offset + 74);
     }
+
+    /**
+     * Sérialise et écrit l'ensemble des métadonnées de cet inode en mémoire.
+     *
+     * @param fileType type du fichier
+     * @param fileSize taille totale en octets
+     * @param creationTime timestamp de création
+     * @param modificationTime timestamp de modification
+     * @param directPointers tableau de 10 pointeurs de blocs directs
+     * @param indirectPointer pointeur vers bloc d'indirection
+     * @param permissions masque de permissions
+     * @param linkCount nombre de liens
+     */
+    public void writeToMemory(
+            int fileType,
+            int fileSize,
+            long creationTime,
+            long modificationTime,
+            int[] directPointers,
+            int indirectPointer,
+            short permissions,
+            int linkCount) {
+
+        byte[] memory = memoryManager.getFilesystemMemory();
+        int offset = getInodeOffset();
+        int cursor = offset;
+
+        // 1. Numéro d'inode
+        cursor += Utils.writeInt(memory, cursor, this.inodeNumber);
+
+        // 2. Type
+        cursor += Utils.writeInt(memory, cursor, fileType);
+
+        // 3. Taille
+        cursor += Utils.writeInt(memory, cursor, fileSize);
+
+        // 4. Création
+        cursor += Utils.writeLong(memory, cursor, creationTime);
+
+        // 5. Modification
+        cursor += Utils.writeLong(memory, cursor, modificationTime);
+
+        // 6. 10 pointeurs directs
+        for (int index = 0; index < DIRECT_POINTERS; index++) {
+            if (directPointers != null && index < directPointers.length) {
+                cursor += Utils.writeInt(memory, cursor, directPointers[index]);
+            } else {
+                cursor += Utils.writeInt(memory, cursor, 0);
+            }
+        }
+
+        // 7. Pointeur indirect
+        cursor += Utils.writeInt(memory, cursor, indirectPointer);
+
+        // 8. Permissions
+        cursor += Utils.writeShort(memory, cursor, permissions);
+
+        // 9. Nombre de liens
+        cursor += Utils.writeInt(memory, cursor, linkCount);
+    }
 }

@@ -194,45 +194,107 @@ public class TestRunner {
 		System.out.println();
 	}
 
-	/**
-     * Test de l'Étape 6 : Lecture de la structure Inode.
-     *
-     * @author Léo Arnaud
-     */
-    public static void testStep6() {
-        System.out.println("--- Test Étape 6 : Lecture Inode ---");
-        MemoryManager memoryManager = new MemoryManager();
-        byte[] memory = memoryManager.getFilesystemMemory();
+	public static void testStep6() {
+		System.out.println("=== TEST ÉTAPE 6 : Adressage Inode ===");
 
-        // L'inode 0 se trouve à l'offset 1024 (2 * 512).
-        int inodeOffset = MemoryManager.INODE_TABLE_OFFSET;
+		MemoryManager mm = new MemoryManager();
 
-        // Écriture manuelle de métadonnées pour le test.
-        Utils.writeInt(memory, inodeOffset + 0, 0);       // Numéro inode = 0.
-        Utils.writeInt(memory, inodeOffset + 4, 1);       // FileType = 1.
-        Utils.writeInt(memory, inodeOffset + 8, 2048);    // FileSize = 2048 octets.
-        Utils.writeLong(memory, inodeOffset + 12, 1000L); // Date création.
-        Utils.writeLong(memory, inodeOffset + 20, 2000L); // Date modification.
+		Inode inode = new Inode(mm, 4);
 
-        // Premier pointeur direct = bloc 129.
-        Utils.writeInt(memory, inodeOffset + 28, 129);
+		int expectedOffset =
+				MemoryManager.INODE_TABLE_OFFSET
+				+ (4 * Inode.INODE_SIZE);
 
-        // Lecture via l'objet Inode.
-        Inode inode = new Inode(memoryManager, 0);
+		assert inode.getInodeOffset() == expectedOffset :
+				"Offset d'inode incorrect";
 
-        boolean offsetOk = (inode.getInodeOffset() == 1024);
-        boolean typeOk = (inode.getFileType() == 1);
-        boolean sizeOk = (inode.getFileSize() == 2048);
-        boolean createOk = (inode.getCreationTime() == 1000L);
-        boolean modifOk = (inode.getModificationTime() == 2000L);
-        boolean pointerOk = (inode.getDirectPointers()[0] == 129);
+		System.out.println("[OK] Étape 6 validée !");
+	}
 
-        System.out.println("Calcul offset (1024) : " + (offsetOk ? "OK" : "ERREUR"));
-        System.out.println("Type de fichier (1) : " + (typeOk ? "OK" : "ERREUR"));
-        System.out.println("Taille de fichier (2048) : " + (sizeOk ? "OK" : "ERREUR"));
-        System.out.println("Dates création/modif : " + (createOk && modifOk ? "OK" : "ERREUR"));
-        System.out.println("Pointeur direct 0 (129) : " + (pointerOk ? "OK" : "ERREUR"));
-        System.out.println();
-    }
+	public static void testStep7() {
+		System.out.println("=== TEST ÉTAPE 7 : Sérialisation Inode ===");
+
+		MemoryManager mm = new MemoryManager();
+
+		Inode inode = new Inode(mm, 2);
+
+		int[] ptrs = new int[] {
+			150, 151, 0, 0, 0,
+			0, 0, 0, 0, 0
+		};
+
+		long creation = 0x0102030405060708L;
+		long modification = 0x1112131415161718L;
+
+		inode.writeToMemory(
+				1,
+				1024,
+				creation,
+				modification,
+				ptrs,
+				777,
+				(short) 0644,
+				3);
+
+		byte[] memory =
+				mm.getFilesystemMemory();
+
+		int offset = inode.getInodeOffset();
+
+		assert (memory[offset] & 0xFF) == 0x00;
+		assert (memory[offset + 3] & 0xFF) == 0x02;
+
+		assert Utils.readInt(memory, offset + 4) == 1;
+		assert Utils.readInt(memory, offset + 8) == 1024;
+
+		assert (memory[offset + 12] & 0xFF) == 0x01;
+		assert (memory[offset + 13] & 0xFF) == 0x02;
+		assert (memory[offset + 14] & 0xFF) == 0x03;
+		assert (memory[offset + 15] & 0xFF) == 0x04;
+		assert (memory[offset + 16] & 0xFF) == 0x05;
+		assert (memory[offset + 17] & 0xFF) == 0x06;
+		assert (memory[offset + 18] & 0xFF) == 0x07;
+		assert (memory[offset + 19] & 0xFF) == 0x08;
+
+		assert Utils.readLong(
+				memory,
+				offset + 12) == creation;
+
+		assert Utils.readLong(
+				memory,
+				offset + 20) == modification;
+
+		assert Utils.readInt(
+				memory,
+				offset + 28) == 150;
+
+		assert Utils.readInt(
+				memory,
+				offset + 32) == 151;
+
+		assert Utils.readInt(
+				memory,
+				offset + 68) == 777;
+
+		assert Utils.readShort(
+				memory,
+				offset + 72) == (short) 0644;
+
+		assert Utils.readInt(
+				memory,
+				offset + 74) == 3;
+
+		assert inode.getFileType() == 1;
+		assert inode.getFileSize() == 1024;
+
+		int[] result =
+				inode.getDirectPointers();
+
+		assert result[0] == 150;
+		assert result[1] == 151;
+
+		System.out.println("[OK] Étape 7 validée !");
+	}
+
 
 }
