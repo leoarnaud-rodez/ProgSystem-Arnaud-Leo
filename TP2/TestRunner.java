@@ -20,6 +20,18 @@ public class TestRunner {
         // Étape 5
         testStep5();
 
+		// Étape 6
+		testStep6();
+
+		// Étape 7
+		testStep7();
+
+		// Étape 8
+		testStep8();
+
+		// Étape 9
+		testStep9();
+
         System.out.println("\n[SUCCÈS] Tous les tests activés ont été validés avec succès !");
     }
 
@@ -294,6 +306,97 @@ public class TestRunner {
 		assert result[1] == 151;
 
 		System.out.println("[OK] Étape 7 validée !");
+	}
+
+	public static void testStep8() {
+		System.out.println("=== TEST ÉTAPE 8 : Création Fichier ===");
+
+		VirtualFileSystem vfs =
+				new VirtualFileSystem();
+
+		boolean ok1 =
+				vfs.createFile("/", "fichier1.txt");
+
+		boolean ok2 =
+				vfs.createFile("/", "fichier2.txt");
+
+		assert ok1 :
+				"La création du premier fichier a échoué";
+
+		assert ok2 :
+				"La création du second fichier a échoué";
+
+		MemoryManager mm =
+				vfs.getMemoryManager();
+
+		Inode inode0 =
+				new Inode(mm, 0);
+
+		Inode inode1 =
+				new Inode(mm, 1);
+
+		assert inode0.getFileType() == 1 :
+				"L'inode 0 doit représenter un fichier";
+
+		assert inode1.getFileType() == 1 :
+				"L'inode 1 doit représenter un fichier";
+
+		assert inode0.getFileSize() == 0 :
+				"Le premier fichier doit être vide";
+
+		assert inode1.getFileSize() == 0 :
+				"Le second fichier doit être vide";
+
+		System.out.println("[OK] Étape 8 validée !");
+	}
+
+	public static void testStep9() {
+		System.out.println("=== TEST ÉTAPE 9 : Entrées/Sorties Fichier ===");
+
+		VirtualFileSystem vfs =
+				new VirtualFileSystem();
+
+		assert vfs.createFile(
+				"/",
+				"test.txt");
+
+		String text =
+				"Contenu de test du système de fichiers";
+
+		byte[] original =
+				text.getBytes();
+
+		boolean writeOk =
+				vfs.writeFile(0, original);
+
+		assert writeOk :
+				"Erreur d'écriture";
+
+		Inode inode =
+				new Inode(
+						vfs.getMemoryManager(),
+						0);
+
+		assert inode.getFileSize()
+				== original.length :
+				"Taille d'inode incorrecte";
+
+		byte[] readBytes =
+				vfs.readFile(0);
+
+		assert readBytes != null :
+				"Buffer lu nul";
+
+		assert readBytes.length
+				== original.length :
+				"Longueur lue incorrecte";
+
+		for (int i = 0; i < original.length; i++) {
+			assert readBytes[i] == original[i] :
+					"Octet incorrect à l'indice " + i;
+		}
+
+		System.out.println("[OK] Étape 9 validée !");
 	}
 
 
