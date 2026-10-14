@@ -1,7 +1,7 @@
 /*
  * Inode.java                                    03 oct. 2026
  * IUT de Rodez, pas de copyright (ni de "copyleft")
- */
+ */ 
 
 /**
  * Représente la structure d'indexation (inode) de 128 octets

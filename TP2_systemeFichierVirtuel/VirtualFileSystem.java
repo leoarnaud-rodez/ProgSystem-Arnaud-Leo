@@ -1,7 +1,7 @@
 /*
  * VirtualFileSystem.java                       5 oct. 2026
  * IUT de Rodez, pas de copyright (ni de "copyleft")
- */
+ */ 
 
 import java.util.*;
 

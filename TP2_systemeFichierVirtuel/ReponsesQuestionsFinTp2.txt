@@ -1,6 +1,6 @@
 Question 1
 Il faut une convention commune parce que selon la machine, le processeur peut lire les octets dans un sens ou dans l'autre. Si la méthode d'écriture range les octets d'un côté et que la méthode de lecture repart dans l'autre sens, la valeur reconstruite n'a plus rien à voir avec le nombre de départ.
-
+ 
 Question 2
 En Java le type byte est signé. Quand on fait des opérations logiques, le langage convertit ça en entier en rajoutant des 1 devant si le bit de poid fort vaut 1. Utiliser l'opérateur & 0xFF permet de masquer ces bits de signe parasites pour récupérer la valeur réelle de l'octet sous forme positive.
 

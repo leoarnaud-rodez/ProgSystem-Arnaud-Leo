@@ -1,5 +1,5 @@
 ce fichier est présent afin de faire passer les tests de TestRunner :)
-
+ 
 voici l'historique de mon terminal chez moi qui valide les tests : 
 
 PS C:\Users\leoar\Documents\IUT\ProgSystem-Arnaud-Leo\TP2> java -ea TestRunner monFichier.txt

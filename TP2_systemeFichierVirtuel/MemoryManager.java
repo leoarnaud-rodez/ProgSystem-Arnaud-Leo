@@ -1,7 +1,7 @@
 /*
  * MemoryManager.java                           16 sept. 2026
  * IUT de Rodez, pas de copyright (ni de "copyleft")
- */
+ */ 
 
 import java.io.*;
 
