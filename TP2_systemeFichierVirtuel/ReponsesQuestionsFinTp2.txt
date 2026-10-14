@@ -1,0 +1,24 @@
+Question 1
+Il faut une convention commune parce que selon la machine, le processeur peut lire les octets dans un sens ou dans l'autre. Si la méthode d'écriture range les octets d'un côté et que la méthode de lecture repart dans l'autre sens, la valeur reconstruite n'a plus rien à voir avec le nombre de départ.
+
+Question 2
+En Java le type byte est signé. Quand on fait des opérations logiques, le langage convertit ça en entier en rajoutant des 1 devant si le bit de poid fort vaut 1. Utiliser l'opérateur & 0xFF permet de masquer ces bits de signe parasites pour récupérer la valeur réelle de l'octet sous forme positive.
+
+Question 3
+Si on fait une erreur à l'écriture et une autre erreur symétrique à la lecture, le test passera alors que le tableau de bytes contient n'importe quoi. C'est pour ça qu'il faut tester avec des valeurs variées, comme des négatifs ou de très grands nombres. Aller vérifier les octets directement dans le tableau est le meilleur moyen d'être sûr que les données sont rangées au bon endroit dans la mémoire.
+
+Question 4
+Le bitmap prend beaucoup moins de place parce qu'un seul bit suffit pour représenter l'état d'un bloc. Avec un entier, on utiliserait plusieurs octets par bloc pour la même information. Globalement, la taille totale du bitmap correspond juste au nombre de blocs / 8.
+
+Question 5
+C'est indispensable pour savoir où lire et écrire. Chaque structure a un emplacement fixe au début du tableau. Si le bitmap bougeait d'endroit sans qu'on adapte le reste du code, le système irait écrire par-dessus d'autres données et corromprait la mémoire.
+
+Question 6
+Ça permet de donner à chaque inode une taille fixe, ce qui rend le calcul de leur position dans la mémoire très simple. L'inode ne stocke pas le texte ou les données elles-mêmes, il contient juste des pointeurs qui indiquent les numéros des blocs où le vrai contenu est rangé.
+
+Question 7
+Les premiers blocs du disque virtuel sont déjà pris par la structure système, le superbloc et la table des inodes. Si on commençait la recherche au bloc 0, l'allocation renverrait un bloc système et on écraserait les métadonnées.
+
+Question 8
+Oui tout à fait. On peut avoir deux disques avec autant de blocs libres mais placés différemment. 
+Par exemple un premier système avec [O, O, L, L, L, L] aura ses blocs libres contigus, alors qu'un système avec [O, L, O, L, O, L, O, L] aura ses blocs libres complètement éparpillés entre des blocs occupés. Le deuxième cas est plus fragmenté.

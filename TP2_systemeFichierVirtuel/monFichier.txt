@@ -1,0 +1,34 @@
+ce fichier est présent afin de faire passer les tests de TestRunner :)
+
+voici l'historique de mon terminal chez moi qui valide les tests : 
+
+PS C:\Users\leoar\Documents\IUT\ProgSystem-Arnaud-Leo\TP2> java -ea TestRunner monFichier.txt
+=== DÉBUT DES TESTS DU VFS ===
+=== TEST ÉTAPE 2 : Utils Entiers ===
+[OK] Étape 2 validée !
+=== TEST ÉTAPE 3 : Utils Long & String ===
+[OK] Étape 3 validée !
+=== TEST ÉTAPE 4 : Initialisation Mémoire ===
+[OK] Étape 4 validée !
+--- Test Étape 5 : Gestion du Bitmap ---
+Blocs système réservés (0-128) : OK
+Bloc 129 libre au départ : OK
+Allocation bloc 1 (attendu 129) : 129 -> OK
+Bloc 129 marqué comme occupé : OK
+Allocation bloc 2 (attendu 130) : 130 -> OK
+Bloc 129 libéré : OK
+Réallocation (attendu 129) : 129 -> OK
+Gestion des indices invalides : OK
+
+=== TEST ÉTAPE 6 : Adressage Inode ===
+[OK] Étape 6 validée !
+=== TEST ÉTAPE 7 : Sérialisation Inode ===
+[OK] Étape 7 validée !
+=== TEST ÉTAPE 8 : Création Fichier ===
+[OK] Étape 8 validée !
+=== TEST ÉTAPE 9 : Entrées/Sorties Fichier ===
+[OK] Étape 9 validée !
+=== TEST FICHIER EXTERNE ===
+[OK] Fichier externe correctement transféré !
+
+[SUCCÈS] Tous les tests activés ont été validés avec succès !
