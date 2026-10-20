@@ -1,0 +1,7 @@
+1. Performance : 
+La version parallèle exploite plusieurs coeurs CPU en même temps. 
+Sur des traitements lourds, elle est plus rapide que sur des petits calculs car le temps de création / gestion des threads peut annuler le gain (sur les petits calculs).
+
+2. Résultats : 
+Les résultats sont identiques. Il n'y a pas de race condition car chaque thread travaille sur sa propre donnée en mémoire. 
+L'addition ne se fait que dans le thread principal de manière séquentielle et une fois que tous les threads ont fini à cause du join()
