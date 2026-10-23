@@ -3,4 +3,5 @@ Ce repertoire git est le support de travail pour les TP pour la ressource Progra
 On  y trouvera  les repertoires pour les TP1 et TP2 : 
 	- TP1 : sur la lecture, l'écriture en  Java avec des images aux format ppm : le TP est complet et fini
 	- TP2 : sur le système de fichier virtuel : le TP est complet et fini
-	- TP3 : sur les threads en Java, le tp est en cours
+	- TP3 : sur les threads en Java : le TP est complet et fini
+	- TP4 : sur les sockets en Java : le TP est complet et fini
